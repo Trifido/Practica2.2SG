@@ -15,9 +15,8 @@ function movimiento_camara() {
 
 function animate(){
 	
-	sphere.rotation.y += 0.01;
-	
-	terra.rotation.y += 0.02;
+	//sphere.rotation.y += 0.01;
+	//terra.rotation.y += 0.02;
 	//sphere.position.x = Math.sin( sphere.rotation.y) * 20;
 	//sphere.position.z = Math.cos( sphere.rotation.y) * 20;
 	
@@ -37,35 +36,19 @@ function main() {
 	
 	scene.add(axes);
 	
-	// Añadir esfera
-	var sphereGeometry = new THREE.SphereGeometry(4,20,20);
+	// ************************************************************** //
+	// ************************* PLANETAS *************************** //
 	
-	var sphereMaterial = new THREE.MeshPhongMaterial({color: 0x7777ff});
-	sphere = new THREE.Mesh(sphereGeometry,sphereMaterial);
-	sphere.position.x = 0;
-	sphere.position.y = 0;
-	sphere.position.z = 0;
-	sphere.castShadow=true;
-	sphere.name = "objeto-" + scene.children.length;
-	scene.add(sphere);
+	var sun = new Astro( 8,20,20,"img/sun.jpg" );
+	var terra = new Astro( 4,20,20,"img/terra.jpg" );
+	var moon = new Astro( 2,20,20,"img/moon.jpg" );
 	
-	var sphereMaterial = new THREE.MeshPhongMaterial({color: 0xaFFFFF});
-	terra = new THREE.Mesh(sphereGeometry,sphereMaterial);
-	terra.position.x = 20;
-	terra.position.y = 0;
-	terra.position.z = 0;
-	terra.castShadow=true;
-	terra.name = "objeto-" + scene.children.length;
-	sphere.add(terra);
+	terra.setPosition( 20,0,0 );
+	moon.setPosition( 10,0,0 )
+	scene.add( sun.sphere );
+	sun.add( terra );
+	terra.add( moon );
 	
-	var sphereMaterial = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
-	luna = new THREE.Mesh(sphereGeometry,sphereMaterial);
-	luna.position.x = 10;
-	luna.position.y = 0;
-	luna.position.z = 0;
-	luna.castShadow=true;
-	luna.name = "objeto-" + scene.children.length;
-	terra.add(luna);
 	
 	// ************************************************************** //
 	// ************************* LUCES ****************************** //
