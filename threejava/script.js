@@ -2,7 +2,7 @@ var scene = new THREE.Scene();
 var camera;
 var controls;
 var renderer = new THREE.WebGLRenderer();
-var cube, sphere, terra, luna;
+var universe;
 var step=0;
 
 main();
@@ -15,11 +15,21 @@ function movimiento_camara() {
 
 function animate(){
 	
-	//sphere.rotation.y += 0.01;
-	//terra.rotation.y += 0.02;
-	//sphere.position.x = Math.sin( sphere.rotation.y) * 20;
-	//sphere.position.z = Math.cos( sphere.rotation.y) * 20;
+	// ****************
+	// Rotacion del sol
+	universe.getChild( 0 ).children[0].rotateY( 0.01 );
+	// ****************
+	// Rotaciones de la tierra
+	// El grupo
+	universe.getChild( 0 ).children[1].rotation.y += 0.02;
+	// La esfera
+	universe.getChild( 0 ).children[1].children[0].rotation.y += 0.02;
+	// ****************
+	// Rotaciones de la luna
+	// El grupo
+	universe.getChild( 0 ).children[1].children[1].rotation.y += 0.01;
 	
+	// ****************
 	requestAnimationFrame( animate );
 	movimiento_camara();
 	
@@ -39,16 +49,26 @@ function main() {
 	// ************************************************************** //
 	// ************************* PLANETAS *************************** //
 	
-	var sun = new Astro( 8,20,20,"img/sun.jpg" );
-	var terra = new Astro( 4,20,20,"img/terra.jpg" );
-	var moon = new Astro( 2,20,20,"img/moon.jpg" );
+	universe = new Grupo();
 	
+	var sungrupo = new Grupo( "sungrupo" );
+	var sun = new Astro( 8,20,20,"sun" );
+	sungrupo.addastro( sun );
+	universe.addgrupo( sungrupo );
+	
+	var terragrupo = new Grupo( "terragrupo" );
+	var terra = new Astro( 4,20,20,"terra" );
 	terra.setPosition( 20,0,0 );
-	moon.setPosition( 10,0,0 )
-	scene.add( sun.sphere );
-	sun.add( terra );
-	terra.add( moon );
+	terragrupo.addastro( terra );
+	sungrupo.addgrupo( terragrupo );
 	
+	var moongrupo = new Grupo( "moongrupo" );
+	var moon = new Astro( 2,20,20,"moon" );
+	moon.setPosition( 10,0,0 );
+	moongrupo.addastro( moon );
+	terragrupo.addgrupo( moongrupo );
+	
+	scene.add( universe.group );
 	
 	// ************************************************************** //
 	// ************************* LUCES ****************************** //
