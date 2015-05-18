@@ -4,13 +4,26 @@ function Astro( radio, var1, var2,url ){
 	this.geometry = new THREE.SphereGeometry( radio,var1,var2 );
 	this.texture = THREE.ImageUtils.loadTexture( "img/" + url + ".jpg");
 	
-	this.material = new THREE.MeshPhongMaterial({map: this.texture});
+	//this.material = new THREE.MeshBasicMaterial({map: this.texture});
+	if( url == "sun" ){
+		this.material = new THREE.MeshBasicMaterial({map: this.texture});
+	}else{
+		
+		this.material = new THREE.MeshLambertMaterial({map: this.texture});
+		
+	}
 	this.sphere = new THREE.Mesh( this.geometry,this.material );
 	
 	this.sphere.position.set( 0,0,0 );
 	this.sphere.castShadow = true;
 	this.sphere.name = url;
 	
+}
+
+Astro.prototype.setShadow = function( val ){
+	
+	this.sphere.castShadow = val;
+		
 }
 
 Astro.prototype.addastro = function( astro ){

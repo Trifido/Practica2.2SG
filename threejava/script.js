@@ -1,9 +1,10 @@
 var scene = new THREE.Scene();
 var camera;
+var teclado;
 var controls;
 var renderer = new THREE.WebGLRenderer();
 var universe;
-var step=0;
+var pushed = false;
 
 main();
 
@@ -13,27 +14,50 @@ function movimiento_camara() {
 	
 }
 
+function actualizarTeclado(){
+	
+	teclado.update();
+	
+	if ( teclado.down("R") ){
+		
+		if( pushed )
+			pushed = false;
+		else
+			pushed = true;
+		
+	}
+	if( teclado.down("A") )
+		alert( "Autores: Alberto & Vicente" );
+		
+	
+}
+
 function animate(){
 	
 	// ****************
 	// Rotacion del sol
-	universe.getChild( 0 ).children[0].rotateY( 0.01 );
+	universe.getChild( 0 ).rotateY( 0.01 );
 	// ****************
 	// Rotaciones de la tierra
 	// El grupo
-	universe.getChild( 0 ).children[1].rotation.y += 0.02;
+	universe.getChild( 1 ).rotateY( 0.02 );
 	// La esfera
-	universe.getChild( 0 ).children[1].children[0].rotation.y += 0.02;
+	universe.getChild( 1 ).children[0].rotation.y += 0.03;
 	// ****************
 	// Rotaciones de la luna
 	// El grupo
-	universe.getChild( 0 ).children[1].children[1].rotation.y += 0.01;
+	if( !pushed )	
+		universe.getChild( 1 ).children[1].rotation.y += 0.01;
+	// La esfera
+	universe.getChild( 1 ).children[1].children[0].rotateY( 0.01 );
 	
 	// ****************
 	requestAnimationFrame( animate );
 	movimiento_camara();
+	actualizarTeclado();
 	
 }
+
 
 function main() {
 	
@@ -51,37 +75,38 @@ function main() {
 	
 	universe = new Grupo();
 	
-	var sungrupo = new Grupo( "sungrupo" );
 	var sun = new Astro( 8,20,20,"sun" );
-	sungrupo.addastro( sun );
-	universe.addgrupo( sungrupo );
+	universe.addastro( sun );
 	
 	var terragrupo = new Grupo( "terragrupo" );
 	var terra = new Astro( 4,20,20,"terra" );
+	terragrupo.setPosition( 0,0,0 );
 	terra.setPosition( 20,0,0 );
 	terragrupo.addastro( terra );
-	sungrupo.addgrupo( terragrupo );
+	universe.addgrupo( terragrupo );
 	
 	var moongrupo = new Grupo( "moongrupo" );
 	var moon = new Astro( 2,20,20,"moon" );
+	moongrupo.setPosition( 20,0,0 );
 	moon.setPosition( 10,0,0 );
 	moongrupo.addastro( moon );
 	terragrupo.addgrupo( moongrupo );
 	
 	scene.add( universe.group );
-	
+
 	// ************************************************************** //
 	// ************************* LUCES ****************************** //
+	// Luz test
+	//var luz1 = new Luz( 0,0xffffff,1,100 );
+	//luz1.set_position( 0, 0, 0 );
+	//luz1.shadow( true );
 	
-	var luz1 = new Luz( 0,0xffffff,1,100 );
-	luz1.set_position( -40, 60, -10 );
-	luz1.shadow( true );
-	
-	var luz2 = new Luz( 0,0xafffff,1,100 );
-	luz2.set_position( 40, 30, 10 );
+	// Luz del sol
+	var luz2 = new Luz( 1,0xafffff,2,100 );
+	luz2.set_position( 0, 0, 0 );
 	luz2.shadow( true );
-	
-	scene.add( luz1.get_object() );
+
+	//scene.add( luz1.get_object() );
 	scene.add( luz2.get_object() );
 	
 	// ************************************************************** //
@@ -95,6 +120,12 @@ function main() {
 	controls = new THREE.OrbitControls( camera.get_object() );
 	controls.damping = 0.2;
 	controls.addEventListener( 'change', movimiento_camara );
+	
+	// ************************************************************** //
+	// ************************* Camara ***************************** //
+	
+	teclado = new KeyboardState();
+	
 	
 	// ************************************************************** //
 	

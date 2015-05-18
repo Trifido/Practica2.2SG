@@ -6,6 +6,12 @@ function Grupo( url ){
 	
 }
 
+Grupo.prototype.setPosition = function( x,y,z ){
+	
+	this.group.position.set( x,y,z );
+		
+}
+
 Grupo.prototype.animar = function( val ){
 		
 	this.group.rotation.y += val;

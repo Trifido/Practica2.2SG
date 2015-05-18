@@ -1,0 +1,15 @@
+body 
+{
+	font-family: Monospace;
+	font-weight: bold;
+	margin: 0px;
+	overflow: hidden;
+}
+
+#controles{
+	
+	position: absolute;
+	font-size: 17px;
+	margin-left: 5px;
+	
+}
