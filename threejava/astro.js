@@ -32,6 +32,12 @@ Astro.prototype.addastro = function( astro ){
 	
 }
 
+Astro.prototype.addanillo = function( anillo ){
+	
+	this.sphere.add( anillo.object );
+	
+}
+
 Astro.prototype.addgrupo = function( grupo ){
 	
 	this.sphere.add( grupo.group );
