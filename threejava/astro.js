@@ -12,6 +12,7 @@ function Astro( radio, var1, var2,url ){
 		this.material = new THREE.MeshLambertMaterial({map: this.texture});
 		
 	}
+	this.material.side = THREE.DoubleSide;
 	this.sphere = new THREE.Mesh( this.geometry,this.material );
 	
 	this.sphere.position.set( 0,0,0 );

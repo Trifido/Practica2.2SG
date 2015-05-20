@@ -66,9 +66,16 @@ function main() {
 	renderer.shadowMapEnabled = true;
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	
-	var axes = new THREE.AxisHelper( 20 );
+	//var axes = new THREE.AxisHelper( 20 );
 	
-	scene.add(axes);
+	//scene.add(axes);
+	
+	// ************************************************************** //
+	// ************************* FONDO ***************************** //
+	
+	var space = new Astro( 8,20,20,"space" );
+	
+	scene.add( space.sphere );
 	
 	// ************************************************************** //
 	// ************************* PLANETAS *************************** //
@@ -77,6 +84,7 @@ function main() {
 	
 	var sun = new Astro( 8,20,20,"sun" );
 	universe.addastro( sun );
+	sun.setShadow( false );
 	
 	var terragrupo = new Grupo( "terragrupo" );
 	var terra = new Astro( 4,20,20,"terra" );

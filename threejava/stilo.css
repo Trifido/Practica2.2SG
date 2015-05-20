@@ -4,6 +4,13 @@ body
 	font-weight: bold;
 	margin: 0px;
 	overflow: hidden;
+
+}
+
+#canvas{
+	
+	background-color: black;
+	
 }
 
 #controles{
@@ -11,5 +18,6 @@ body
 	position: absolute;
 	font-size: 17px;
 	margin-left: 5px;
+	color: white;
 	
 }
