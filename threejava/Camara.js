@@ -11,6 +11,18 @@ Camara.prototype.get_object = function(){
 	
 }
 
+Camara.prototype.updateProjectionMatrix = function(){
+
+	this.object.updateProjectionMatrix();	
+	
+}
+
+Camara.prototype.aspect = function( val ){
+	
+	this.object.aspect = val;
+	
+}
+
 Camara.prototype.setPosition = function( x,y,z ){
 
 	this.object.position.set(x,y,z);

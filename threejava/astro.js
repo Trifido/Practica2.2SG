@@ -3,8 +3,7 @@ function Astro( radio, var1, var2,url ){
 
 	this.geometry = new THREE.SphereGeometry( radio,var1,var2 );
 	this.texture = THREE.ImageUtils.loadTexture( "img/" + url + ".jpg");
-	
-	//this.material = new THREE.MeshBasicMaterial({map: this.texture});
+
 	if( url == "sun" ){
 		this.material = new THREE.MeshBasicMaterial({map: this.texture});
 	}else{
