@@ -3,9 +3,14 @@ var camera;
 var teclado;
 var controls;
 var renderer = new THREE.WebGLRenderer();
+var oLoader = new THREE.OBJMTLLoader();
 var universe;
 var pushed = false;
+var acelerar = 0;
+var rotar = 0;
+var model;
 
+var object;
 main();
 
 function movimiento_camara() {
@@ -25,14 +30,29 @@ function actualizarTeclado(){
 		else
 			pushed = true;
 		
-	}
-	if( teclado.down("A") )
+	}else if( teclado.pressed("W") ){
+	
+		acelerar -= 1;
+			
+	}else if( teclado.pressed("S") ){
+		
+		acelerar += 1;
+		
+	}else if( teclado.pressed("A") ){
+		
+		rotar += 0.1;
+		
+	}else if( teclado.pressed("D") ){
+		
+		rotar -= 0.1;
+		
+	}else if( teclado.down("V") )
 		alert( "Autores: Alberto & Vicente" );
 		
 	
 }
 
-function animate(){
+function animate( ){
 	
 	// ****************
 	// Rotacion del background
@@ -100,6 +120,16 @@ function animate(){
 	// La esfera
 	universe.getChild( 7 ).getObjectByName( "neptunogrupo" ).getObjectByName( "neptuno" ).rotateY( 0.01 );
 	// ****************
+	
+	// MOVIMIENTO DE LA NAVE: 
+	//alert(scene.getChild( 1 ).name);//.position.z += aceleracion;
+	//object.position.z += aceleration;
+	
+	model.rotation.y = rotar;
+	model.position.z = acelerar * Math.cos(rotar);
+	model.position.x = acelerar * Math.sin(rotar);
+	
+	
 	requestAnimationFrame( animate );
 	movimiento_camara();
 	actualizarTeclado();
@@ -132,7 +162,7 @@ function main() {
 	
 	universe = new Grupo();
 	
-	var sun = new Astro( 13,20,20,"sun" );
+	var sun = new Astro( 13,90,90,"sun" );
 	universe.addastro( sun );
 	sun.setShadow( false );
 	
@@ -213,15 +243,6 @@ function main() {
 	neptunogrupo.addastro( neptuno );
 	universe.addgrupo( neptunogrupo );
 	
-	var oLoader = new THREE.OBJMTLLoader();
-	oLoader.load('obj/alien_interceptor_flying.obj', 'obj/alien_interceptor_flying.mtl', function(object) {
-	
-		object.position.y = 20;
-		object.position.z = 20;
-		object.scale.set(0.05, 0.05, 0.05);
-		scene.add(object);
-	});
-	
 	scene.add( universe.group );
 
 	// ************************************************************** //
@@ -253,8 +274,21 @@ function main() {
 	
 	// ************************************************************** //
 	
+	oLoader.load('obj/ARC170.obj', 'obj/ARC170.mtl', function(object) {
+	
+		object.position.y = 30;
+		//object.position.z = 20;
+		object.scale.set(0.01, 0.01, 0.01);
+		
+		model = object;
+		scene.add( model );
+		
+		animate();
+	});
+	
 	window.addEventListener( 'resize', onWindowResize, false );
 	$("#canvas").append(renderer.domElement);
 	
-	animate();
+	
+	
 }
