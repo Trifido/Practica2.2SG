@@ -1,22 +1,26 @@
 var scene = new THREE.Scene();
-var camera;
+var camera,camera2;
 var teclado;
 var controls;
 var renderer = new THREE.WebGLRenderer();
 var oLoader = new THREE.OBJMTLLoader();
 var universe;
+var ship_group;
 var pushed = false;
 var acelerar = 0;
 var rotar = 0;
 var model;
-
+var camera_select = 1;
 var object;
+
 main();
 
 function movimiento_camara() {
-
-	renderer.render(scene, camera.get_object());
 	
+	if( camera_select == 1 )
+		renderer.render(scene, camera.get_object());
+	else
+		renderer.render(scene, camera2.get_object());
 }
 
 function actualizarTeclado(){
@@ -31,11 +35,13 @@ function actualizarTeclado(){
 			pushed = true;
 		
 	}else if( teclado.pressed("W") ){
-	
+		
+		camera2.object.position.z-=1;
 		acelerar -= 1;
 			
 	}else if( teclado.pressed("S") ){
 		
+		camera2.object.position.z+=1;
 		acelerar += 1;
 		
 	}else if( teclado.pressed("A") ){
@@ -46,6 +52,14 @@ function actualizarTeclado(){
 		
 		rotar -= 0.1;
 		
+	}else if( teclado.pressed("1") ){
+	
+		camera_select = 1;
+	
+	}else if( teclado.pressed("2") ){
+	
+		camera_select = 2;
+	
 	}else if( teclado.down("V") )
 		alert( "Autores: Alberto & Vicente" );
 		
@@ -122,12 +136,10 @@ function animate( ){
 	// ****************
 	
 	// MOVIMIENTO DE LA NAVE: 
-	//alert(scene.getChild( 1 ).name);//.position.z += aceleracion;
-	//object.position.z += aceleration;
 	
-	model.rotation.y = rotar;
-	model.position.z = acelerar * Math.cos(rotar);
-	model.position.x = acelerar * Math.sin(rotar);
+	//model.rotation.y = rotar;
+	//model.position.z = acelerar * Math.cos(rotar);
+	//model.position.x = acelerar * Math.sin(rotar);
 	
 	
 	requestAnimationFrame( animate );
@@ -141,6 +153,8 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	camera.aspect(window.innerWidth / window.innerHeight);
 	camera.updateProjectionMatrix();
+	camera2.aspect(window.innerWidth / window.innerHeight);
+	camera2.updateProjectionMatrix();
 	
 }
 
@@ -252,8 +266,14 @@ function main() {
 	var luz = new Luz( 1,0xafffff,2,1000 );
 	luz.set_position( 0, 0, 0 );
 	luz.shadow( true );
-
+	
+	// Luz Arriba para ver la nave mejor
+	var luz2 = new Luz( 1,0xafffff,1,500 );
+	luz2.set_position( 0, 30, 10 );
+	luz2.shadow( true );
+	
 	scene.add( luz.get_object() );
+	scene.add( luz2.get_object() );
 	
 	// ************************************************************** //
 	// ************************* Camara ***************************** //
@@ -267,21 +287,32 @@ function main() {
 	controls.damping = 0.2;
 	controls.addEventListener( 'change', movimiento_camara );
 	
+	// Camera nave
+	
+	camera2 = new Camara( 45,0.1, 1000 );
+	camera2.setPosition( 0,2,-24 );
+	camera2.setUp( new THREE.Vector3( 0,1,0 ) );
+	camera2.setView( new THREE.Vector3( 0,0,-31 ) );
+	
 	// ************************************************************** //
-	// ************************* Camara ***************************** //
+	// ************************* Teclado **************************** //
 	
 	teclado = new KeyboardState();
 	
 	// ************************************************************** //
+	// ************************* NAVE ******************************* //
+	
+	//ship_group = new Grupo();
+	//ship_group.setPosition(0,0,10);
 	
 	oLoader.load('obj/ARC170.obj', 'obj/ARC170.mtl', function(object) {
-	
-		object.position.y = 30;
-		//object.position.z = 20;
-		object.scale.set(0.01, 0.01, 0.01);
 		
+		object.position.z = -30;
+		object.scale.set(0.01, 0.01, 0.01);
 		model = object;
-		scene.add( model );
+		//ship_group.group.add( model );
+		//scene.add( ship_group.group );
+		universe.group.add( model );
 		
 		animate();
 	});
