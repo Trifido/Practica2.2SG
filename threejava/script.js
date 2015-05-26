@@ -3,15 +3,11 @@ var camera,camera2;
 var teclado;
 var controls;
 var renderer = new THREE.WebGLRenderer();
-var oLoader = new THREE.OBJMTLLoader();
 var universe;
-var ship_group;
 var pushed = false;
-var acelerar = 0;
 var rotar = 0;
 var model;
 var camera_select = 1;
-var object;
 
 main();
 
@@ -19,8 +15,10 @@ function movimiento_camara() {
 	
 	if( camera_select == 1 )
 		renderer.render(scene, camera.get_object());
-	else
+	else{
+		camera2.setView( model.position );	
 		renderer.render(scene, camera2.get_object());
+	}
 }
 
 function actualizarTeclado(){
@@ -36,21 +34,29 @@ function actualizarTeclado(){
 		
 	}else if( teclado.pressed("W") ){
 		
-		camera2.object.position.z-=1;
-		acelerar -= 1;
+		model.translateZ( -1 );
 			
 	}else if( teclado.pressed("S") ){
 		
-		camera2.object.position.z+=1;
-		acelerar += 1;
+		model.translateZ( 1 );
 		
 	}else if( teclado.pressed("A") ){
 		
 		rotar += 0.1;
+		model.rotation.y = rotar;
 		
 	}else if( teclado.pressed("D") ){
 		
 		rotar -= 0.1;
+		model.rotation.y = rotar;
+		
+	}else if( teclado.pressed("Q") ){
+		
+		model.translateX( -1 );
+		
+	}else if( teclado.pressed("E") ){
+		
+		model.translateX( 1 );
 		
 	}else if( teclado.pressed("1") ){
 	
@@ -134,13 +140,6 @@ function animate( ){
 	// La esfera
 	universe.getChild( 7 ).getObjectByName( "neptunogrupo" ).getObjectByName( "neptuno" ).rotateY( 0.01 );
 	// ****************
-	
-	// MOVIMIENTO DE LA NAVE: 
-	
-	//model.rotation.y = rotar;
-	//model.position.z = acelerar * Math.cos(rotar);
-	//model.position.x = acelerar * Math.sin(rotar);
-	
 	
 	requestAnimationFrame( animate );
 	movimiento_camara();
@@ -263,12 +262,11 @@ function main() {
 	// ************************* LUCES ****************************** //
 
 	// Luz del sol
-	var luz = new Luz( 1,0xafffff,2,1000 );
+	var luz = new Luz( 1,0xafffff,2,1000000 );
 	luz.set_position( 0, 0, 0 );
-	luz.shadow( true );
 	
 	// Luz Arriba para ver la nave mejor
-	var luz2 = new Luz( 1,0xafffff,1,500 );
+	var luz2 = new Luz( 0,0xafffff,1,500000 );
 	luz2.set_position( 0, 30, 10 );
 	luz2.shadow( true );
 	
@@ -289,10 +287,9 @@ function main() {
 	
 	// Camera nave
 	
-	camera2 = new Camara( 45,0.1, 1000 );
-	camera2.setPosition( 0,2,-24 );
+	camera2 = new Camara( 45,0.01, 100000 );
+	camera2.setPosition( 0,1000,2000 );
 	camera2.setUp( new THREE.Vector3( 0,1,0 ) );
-	camera2.setView( new THREE.Vector3( 0,0,-31 ) );
 	
 	// ************************************************************** //
 	// ************************* Teclado **************************** //
@@ -300,20 +297,32 @@ function main() {
 	teclado = new KeyboardState();
 	
 	// ************************************************************** //
+	// ************************* Sonido ***************************** //
+	
+	var listener = new THREE.AudioListener();
+	
+	var sound1 = new THREE.Audio( listener );
+	sound1.load( 'sounds/Imperial_March.ogg' );
+	sound1.setRefDistance( 20 );
+	sound1.autoplay = true;
+	scene.add( sound1 );
+	
+	// ************************************************************** //
 	// ************************* NAVE ******************************* //
 	
-	//ship_group = new Grupo();
-	//ship_group.setPosition(0,0,10);
-	
+	var oLoader = new THREE.OBJMTLLoader();
 	oLoader.load('obj/ARC170.obj', 'obj/ARC170.mtl', function(object) {
 		
 		object.position.z = -30;
 		object.scale.set(0.01, 0.01, 0.01);
 		model = object;
-		//ship_group.group.add( model );
-		//scene.add( ship_group.group );
 		universe.group.add( model );
 		
+		// Añadir la camara a la nave para que la siga
+		model.add( camera2.get_object() );
+		// Hacer que mire a la nave
+		camera2.setView( model.position );
+	
 		animate();
 	});
 	
